@@ -136,7 +136,7 @@ int main(int argc, char **argv, char **envp)
 
     // Load the mpengine module.
     if (pe_load_library(image.name, &image.image, &image.size) == false) {
-        LogMessage("You must add the dll and vdm files to the engine directory");
+        printf("You must add the dll and vdm files to the engine directory");
         return 1;
     }
 
@@ -150,21 +150,21 @@ int main(int argc, char **argv, char **envp)
     // Load any additional exports.
     if (!process_extra_exports(image.image, PeHeader->OptionalHeader.BaseOfCode, "engine/mpengine.map")) {
 #ifndef NDEBUG
-        LogMessage("The map file wasn't found, symbols wont be available");
+        printf("The map file wasn't found, symbols wont be available");
 #endif
     } else {
         // Calculate the commands needed to get export and map symbols visible in gdb.
         if (IsDebuggerPresent()) {
-            LogMessage("GDB: add-symbol-file %s %#x+%#x",
+            printf("GDB: add-symbol-file %s %#x+%#x",
                        image.name,
                        image.image,
                        PeHeader->OptionalHeader.BaseOfCode);
-            LogMessage("GDB: shell bash genmapsym.sh %#x+%#x symbols_%d.o < %s",
+            printf("GDB: shell bash genmapsym.sh %#x+%#x symbols_%d.o < %s",
                        image.image,
                        PeHeader->OptionalHeader.BaseOfCode,
                        getpid(),
                        "engine/mpengine.map");
-            LogMessage("GDB: add-symbol-file symbols_%d.o 0", getpid());
+            printf("GDB: add-symbol-file symbols_%d.o 0", getpid());
             __debugbreak();
         }
     }
@@ -178,7 +178,7 @@ int main(int argc, char **argv, char **envp)
             struct _CONTEXT *ContextRecord,
             struct _EXCEPTION_FRAME **DispatcherContext)
     {
-        LogMessage("Toplevel Exception Handler Caught Exception");
+        printf("Toplevel Exception Handler Caught Exception");
         abort();
     }
 
@@ -222,8 +222,8 @@ int main(int argc, char **argv, char **envp)
     KernelHandle = NULL;
 
     if (__rsignal(&KernelHandle, RSIG_BOOTENGINE, &BootParams, sizeof BootParams) != 0) {
-        LogMessage("__rsignal(RSIG_BOOTENGINE) returned failure, missing definitions?");
-        LogMessage("Make sure the VDM files and mpengine.dll are in the engine directory");
+        printf("__rsignal(RSIG_BOOTENGINE) returned failure, missing definitions?");
+        printf("Make sure the VDM files and mpengine.dll are in the engine directory");
         return 1;
     }
 
@@ -240,7 +240,7 @@ int main(int argc, char **argv, char **envp)
     ScanDescriptor.GetName       = GetStreamName;
 
     if (argc < 2) {
-        LogMessage("usage: %s [filenames...]", *argv);
+        printf("usage: %s [filenames...]", *argv);
         return 1;
     }
 
@@ -251,14 +251,14 @@ int main(int argc, char **argv, char **envp)
         ScanDescriptor.UserPtr = fopen(*argv, "r");
 
         if (ScanDescriptor.UserPtr == NULL) {
-            LogMessage("failed to open file %s", *argv);
+            printf("failed to open file %s", *argv);
             return 1;
         }
 
-        LogMessage("Scanning %s...", *argv);
+        printf("Scanning %s...", *argv);
 
         if (__rsignal(&KernelHandle, RSIG_SCAN_STREAMBUFFER, &ScanParams, sizeof ScanParams) != 0) {
-            LogMessage("__rsignal(RSIG_SCAN_STREAMBUFFER) returned failure, file unreadable?");
+            printf("__rsignal(RSIG_SCAN_STREAMBUFFER) returned failure, file unreadable?");
             return 1;
         }
 
