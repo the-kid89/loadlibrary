@@ -66,7 +66,7 @@ static DWORD EngineScanCallback(PSCANSTRUCT Scan)
     /*
     if (Scan->Flags & SCAN_MEMBERNAME) {
         printf("Scanning archive member %s\n", Scan->VirusName);
-    }*/
+    }
     if (Scan->Flags & SCAN_FILENAME) {
         printf("[Scanning %s]", Scan->FileName);
     }
@@ -79,15 +79,20 @@ static DWORD EngineScanCallback(PSCANSTRUCT Scan)
     if (Scan->Flags & SCAN_CORRUPT) {
         printf("[File may be corrupt]");
     }
+
+    '"2FF5307E.vsc" in file "../test_files/zip_test.zip" is infected with the "JS/Nemucod.DXS!tr.dldr" virus. VID: 7632131 SIGID: 633490 SIGTYPE: S\n'
+
+    */
     if (Scan->Flags & SCAN_FILETYPE) {
-        printf("[File %s is identified as %s]", Scan->FileName, Scan->VirusName);
+        printf("%s is infected with with the %s virus\n", Scan->FileName, Scan->VirusName);
     }
     if (Scan->Flags & 0x08000022) {
-        printf("[Threat %s identified in %s]", Scan->VirusName, Scan->FileName);
+        printf("%s is infected with with the %s virus\n", Scan->FileName, Scan->VirusName);
+        //printf("[Threat %s identified in %s]", Scan->VirusName, Scan->FileName);
     }
     // This may indicate PUA.
     if ((Scan->Flags & 0x40010000) == 0x40010000) {
-        printf("[Threat %s identified]", Scan->VirusName);
+        printf("Threat %s identified\n", Scan->VirusName);
     }
     return 0;
 }
@@ -256,7 +261,7 @@ int main(int argc, char **argv, char **envp)
             return 1;
         }
 
-        printf("Scanning %s...\n", *argv);
+        printf("Scanning %s\n", *argv);
 
         if (__rsignal(&KernelHandle, RSIG_SCAN_STREAMBUFFER, &ScanParams, sizeof ScanParams) != 0) {
             printf("__rsignal(RSIG_SCAN_STREAMBUFFER) returned failure, file unreadable?\n");
