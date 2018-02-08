@@ -261,7 +261,7 @@ int main(int argc, char **argv, char **envp)
             return 1;
         }
 
-        printf("Scanning %s\n", *argv);
+        // printf("Scanning %s\n", *argv);
 
         if (__rsignal(&KernelHandle, RSIG_SCAN_STREAMBUFFER, &ScanParams, sizeof ScanParams) != 0) {
             printf("__rsignal(RSIG_SCAN_STREAMBUFFER) returned failure, file unreadable?\n");
