@@ -63,9 +63,10 @@ DWORD (* __rsignal)(PHANDLE KernelHandle, DWORD Code, PVOID Params, DWORD Size);
 
 static DWORD EngineScanCallback(PSCANSTRUCT Scan)
 {
+    /*
     if (Scan->Flags & SCAN_MEMBERNAME) {
         printf("Scanning archive member %s\n", Scan->VirusName);
-    }
+    }*/
     if (Scan->Flags & SCAN_FILENAME) {
         printf("Scanning %s\n", Scan->FileName);
     }
