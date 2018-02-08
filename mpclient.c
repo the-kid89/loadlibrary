@@ -64,29 +64,29 @@ DWORD (* __rsignal)(PHANDLE KernelHandle, DWORD Code, PVOID Params, DWORD Size);
 static DWORD EngineScanCallback(PSCANSTRUCT Scan)
 {
     if (Scan->Flags & SCAN_MEMBERNAME) {
-        printf("Scanning archive member %s", Scan->VirusName);
+        printf("Scanning archive member %s\n", Scan->VirusName);
     }
     if (Scan->Flags & SCAN_FILENAME) {
-        printf("Scanning %s", Scan->FileName);
+        printf("Scanning %s\n", Scan->FileName);
     }
     if (Scan->Flags & SCAN_PACKERSTART) {
-        printf("Packer %s identified.", Scan->VirusName);
+        printf("Packer %s identified.\n", Scan->VirusName);
     }
     if (Scan->Flags & SCAN_ENCRYPTED) {
-        printf("File is encrypted.");
+        printf("File is encrypted.\n");
     }
     if (Scan->Flags & SCAN_CORRUPT) {
-        printf("File may be corrupt.");
+        printf("File may be corrupt.\n");
     }
     if (Scan->Flags & SCAN_FILETYPE) {
-        printf("File %s is identified as %s", Scan->FileName, Scan->VirusName);
+        printf("File %s is identified as %s\n", Scan->FileName, Scan->VirusName);
     }
     if (Scan->Flags & 0x08000022) {
-        printf("Threat %s identified.", Scan->VirusName);
+        printf("Threat %s identified.\n", Scan->VirusName);
     }
     // This may indicate PUA.
     if ((Scan->Flags & 0x40010000) == 0x40010000) {
-        printf("Threat %s identified.", Scan->VirusName);
+        printf("Threat %s identified.\n", Scan->VirusName);
     }
     return 0;
 }
@@ -136,7 +136,7 @@ int main(int argc, char **argv, char **envp)
 
     // Load the mpengine module.
     if (pe_load_library(image.name, &image.image, &image.size) == false) {
-        printf("You must add the dll and vdm files to the engine directory");
+        printf("You must add the dll and vdm files to the engine directory\n");
         return 1;
     }
 
@@ -150,21 +150,21 @@ int main(int argc, char **argv, char **envp)
     // Load any additional exports.
     if (!process_extra_exports(image.image, PeHeader->OptionalHeader.BaseOfCode, "engine/mpengine.map")) {
 #ifndef NDEBUG
-        printf("The map file wasn't found, symbols wont be available");
+        printf("The map file wasn't found, symbols wont be available\n");
 #endif
     } else {
         // Calculate the commands needed to get export and map symbols visible in gdb.
         if (IsDebuggerPresent()) {
-            printf("GDB: add-symbol-file %s %#x+%#x",
+            printf("GDB: add-symbol-file %s %#x+%#x\n",
                        image.name,
                        image.image,
                        PeHeader->OptionalHeader.BaseOfCode);
-            printf("GDB: shell bash genmapsym.sh %#x+%#x symbols_%d.o < %s",
+            printf("GDB: shell bash genmapsym.sh %#x+%#x symbols_%d.o < %s\n",
                        image.image,
                        PeHeader->OptionalHeader.BaseOfCode,
                        getpid(),
                        "engine/mpengine.map");
-            printf("GDB: add-symbol-file symbols_%d.o 0", getpid());
+            printf("GDB: add-symbol-file symbols_%d.o 0\n", getpid());
             __debugbreak();
         }
     }
@@ -178,7 +178,7 @@ int main(int argc, char **argv, char **envp)
             struct _CONTEXT *ContextRecord,
             struct _EXCEPTION_FRAME **DispatcherContext)
     {
-        printf("Toplevel Exception Handler Caught Exception");
+        printf("Toplevel Exception Handler Caught Exception\n");
         abort();
     }
 
@@ -222,8 +222,8 @@ int main(int argc, char **argv, char **envp)
     KernelHandle = NULL;
 
     if (__rsignal(&KernelHandle, RSIG_BOOTENGINE, &BootParams, sizeof BootParams) != 0) {
-        printf("__rsignal(RSIG_BOOTENGINE) returned failure, missing definitions?");
-        printf("Make sure the VDM files and mpengine.dll are in the engine directory");
+        printf("__rsignal(RSIG_BOOTENGINE) returned failure, missing definitions?\n");
+        printf("Make sure the VDM files and mpengine.dll are in the engine directory\n");
         return 1;
     }
 
@@ -240,7 +240,7 @@ int main(int argc, char **argv, char **envp)
     ScanDescriptor.GetName       = GetStreamName;
 
     if (argc < 2) {
-        printf("usage: %s [filenames...]", *argv);
+        printf("usage: %s [filenames...]\n", *argv);
         return 1;
     }
 
@@ -251,14 +251,14 @@ int main(int argc, char **argv, char **envp)
         ScanDescriptor.UserPtr = fopen(*argv, "r");
 
         if (ScanDescriptor.UserPtr == NULL) {
-            printf("failed to open file %s", *argv);
+            printf("failed to open file %s\n", *argv);
             return 1;
         }
 
-        printf("Scanning %s...", *argv);
+        printf("Scanning %s...\n", *argv);
 
         if (__rsignal(&KernelHandle, RSIG_SCAN_STREAMBUFFER, &ScanParams, sizeof ScanParams) != 0) {
-            printf("__rsignal(RSIG_SCAN_STREAMBUFFER) returned failure, file unreadable?");
+            printf("__rsignal(RSIG_SCAN_STREAMBUFFER) returned failure, file unreadable?\n");
             return 1;
         }
 
