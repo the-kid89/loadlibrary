@@ -68,27 +68,28 @@ static DWORD EngineScanCallback(PSCANSTRUCT Scan)
         printf("Scanning archive member %s\n", Scan->VirusName);
     }*/
     if (Scan->Flags & SCAN_FILENAME) {
-        printf("Scanning %s\n", Scan->FileName);
+        printf("[Scanning %s]", Scan->FileName);
     }
     if (Scan->Flags & SCAN_PACKERSTART) {
-        printf("Packer %s identified.\n", Scan->VirusName);
+        printf("[Packer %s identified.]", Scan->VirusName);
     }
     if (Scan->Flags & SCAN_ENCRYPTED) {
-        printf("File is encrypted.\n");
+        printf("[File is encrypted]");
     }
     if (Scan->Flags & SCAN_CORRUPT) {
-        printf("File may be corrupt.\n");
+        printf("[File may be corrupt]");
     }
     if (Scan->Flags & SCAN_FILETYPE) {
-        printf("File %s is identified as %s\n", Scan->FileName, Scan->VirusName);
+        printf("[File %s is identified as %s]", Scan->FileName, Scan->VirusName);
     }
     if (Scan->Flags & 0x08000022) {
-        printf("Threat %s identified.\n", Scan->VirusName);
+        printf("[Threat %s identified]", Scan->VirusName);
     }
     // This may indicate PUA.
     if ((Scan->Flags & 0x40010000) == 0x40010000) {
-        printf("Threat %s identified.\n", Scan->VirusName);
+        printf("[Threat %s identified]", Scan->VirusName);
     }
+    printf("\n");
     return 0;
 }
 
