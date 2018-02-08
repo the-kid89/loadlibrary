@@ -83,13 +83,12 @@ static DWORD EngineScanCallback(PSCANSTRUCT Scan)
         printf("[File %s is identified as %s]", Scan->FileName, Scan->VirusName);
     }
     if (Scan->Flags & 0x08000022) {
-        printf("[Threat %s identified]", Scan->VirusName);
+        printf("[Threat %s identified in %s]", Scan->VirusName, Scan->FileName);
     }
     // This may indicate PUA.
     if ((Scan->Flags & 0x40010000) == 0x40010000) {
         printf("[Threat %s identified]", Scan->VirusName);
     }
-    printf("\n");
     return 0;
 }
 
