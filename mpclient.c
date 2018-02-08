@@ -84,15 +84,15 @@ static DWORD EngineScanCallback(PSCANSTRUCT Scan)
 
     */
     if (Scan->Flags & SCAN_FILETYPE) {
-        printf("%s is infected with with the %s virus\n", Scan->FileName, Scan->VirusName);
+        printf("\"%s\" is infected with with the \"%s\" virus\n", Scan->FileName, Scan->VirusName);
     }
     if (Scan->Flags & 0x08000022) {
-        printf("%s is infected with with the %s virus\n", Scan->FileName, Scan->VirusName);
+        printf("\"%s\" is infected with with the \"%s\" virus\n", Scan->FileName, Scan->VirusName);
         //printf("[Threat %s identified in %s]", Scan->VirusName, Scan->FileName);
     }
     // This may indicate PUA.
     if ((Scan->Flags & 0x40010000) == 0x40010000) {
-        printf("Threat %s identified\n", Scan->VirusName);
+        printf("Threat \"%s\" identified\n", Scan->VirusName);
     }
     return 0;
 }
